@@ -61,16 +61,20 @@
 
   <script>
     function toggleChecked(el) {
-      el.parentElement.classList.toggle("checked", el.checked);
+      const id = el.id;
+      const checked = el.checked;
+      el.parentElement.classList.toggle("checked", checked);
+      localStorage.setItem(id, checked); // Salva estado do checkbox
     }
 
     function renderCategoria(titulo, itens) {
       document.write(`<section><h2>${titulo}</h2><ul>`);
       itens.forEach(item => {
-        const id = `${titulo}-${item}`.replace(/\s+/g, "-");
+        const id = `${titulo}-${item}`.replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+        const saved = localStorage.getItem(id) === "true";
         document.write(`
-          <li><label>
-            <input type="checkbox" onchange="toggleChecked(this)" id="${id}">
+          <li><label class="${saved ? 'checked' : ''}">
+            <input type="checkbox" onchange="toggleChecked(this)" id="${id}" ${saved ? 'checked' : ''}>
             ${item}
           </label></li>
         `);
@@ -82,33 +86,16 @@
       "🍳 Cozinha": [
         "Jogo de panelas", "Frigideira antiaderente", "Panela de pressão", "Assadeiras (retangular, redonda, cupcake)", "Potes herméticos com tampa", "Escorredor de arroz/macarrão", "Escorredor de louças", "Conjunto de talheres", "Conjunto de pratos (raso, fundo e sobremesa)", "Copos variados (vidro, acrílico)", "Canecas e xícaras", "Bowls (cereal, açaí, sobremesa)", "Jogo americano / sousplat", "Porta guardanapos", "Forminhas de silicone (bolo, gelo, cupcake)", "Tábuas de corte (legumes e carne)", "Facas boas (chef, legumes, pão)", "Colheres de silicone", "Espátula, concha, escumadeira", "Medidores (colher e xícara)", "Abridor de latas", "Abridor de garrafas e saca-rolhas", "Ralador 4 faces", "Peneira", "Jarra de água", "Bule térmico", "Panos de prato", "Avental", "Luva térmica", "Porta-temperos", "Suporte para esponja/detergente", "Lixeira de pia", "Tapete antiderrapante", "Timer de cozinha", "Descascador de legumes", "Cortador de pizza", "Espremedor de alho", "Organizador de talheres", "Suporte de parede para xícaras e utensílios", "Tábua para frios", "Escova para limpar garrafas e copos", "Moedor de pimenta e sal", "Potes para mantimentos (feijão, arroz, açúcar)", "Caixa organizadora para sacos plásticos e embalagens", "Descanso para panela quente", "Porta guardanapos de papel"
       ],
-      "🛏 Quarto": [
-        "Jogo de cama (mínimo 3 conjuntos)", "Protetor de colchão", "Travesseiros (mínimo 2 por pessoa)", "Protetores de travesseiro", "Manta leve + cobertor quente", "Edredom", "Colcha decorativa", "Fronhas avulsas", "Cortina blackout", "Tapete", "Cabides (veludo, madeira ou plástico)", "Organizador de gavetas", "Caixas organizadoras", "Porta-joias / bijuterias", "Aromatizador ou difusor", "Espelho de corpo inteiro", "Abajur de cabeceira", "Bandeja para café ou notebook", "Relógio de mesa", "Organizador de roupas para viagem", "Protetor auricular (sono leve)", "Caixa organizadora para maquiagem e acessórios", "Cesto para roupas limpas"
-      ],
-      "🚿 Banheiro": [
-        "Toalhas (mínimo 3 por pessoa: banho, rosto e piso)", "Tapete antiderrapante", "Cortina de box", "Roupão", "Cesto pequeno de roupa", "Porta escova de dentes e creme dental", "Porta sabonete", "Dispenser de shampoo/sabonete líquido", "Suporte de parede para produtos", "Lixeira com tampa/pedal", "Escova sanitária", "Espelho pequeno (maquiagem/barbear)", "Aromatizador", "Organizadores de gaveta", "Suporte para papel higiênico", "Caixa de primeiros socorros", "Tesoura pequena e pinça", "Escovinha para limpeza de ralo", "Prendedor de toalha", "Cesto para produtos extras", "Porta shampoo e condicionador para box", "Tapete para pia"
-      ],
-      "🧺 Lavanderia": [
-        "Máquina de lavar", "Varal (chão ou parede)", "Ferro de passar ou vaporizador", "Tábua de passar", "Baldes (mínimo 2)", "Bacia grande", "Cesto de roupa suja", "Pregadores", "Vassoura, rodo e pá", "MOP ou esfregão", "Panos de chão", "Escova de roupa", "Cesto de produtos de limpeza", "Sabão em pó, líquido, amaciante", "Porta-vassouras", "Luvas de limpeza", "Lixeira pequena", "Aromatizador para roupas", "Esfregão de mão ou escova multiuso", "Rodos e escovas para pisos variados", "Balde com rodinha (opcional)"
-      ],
-      "🛋 Sala": [
-        "Sofá", "Mesa lateral ou centro", "Rack ou painel para TV", "Tapete grande", "Cortinas", "Almofadas decorativas", "Mantas para sofá", "Abajur / luminária de chão", "Aromatizador / difusor", "Bandeja decorativa", "Porta-retratos", "Porta-controle remoto", "Espelho decorativo", "Vasos ou plantas artificiais", "Quadro ou pôster", "Cesto para mantas ou revistas", "Porta-copos", "Extensão com botão liga/desliga", "Suporte para revistas ou livros"
-      ],
-      "🧰 Manutenção & Ferramentas": [
-        "Martelo", "Chave de fenda e Philips", "Fita isolante", "Extensão elétrica", "Filtro de linha", "Trena", "Kit de pregos, buchas e parafusos", "Alicate universal", "Super Bonder (cola forte)", "Lanterna ou luz de emergência", "Fita dupla face (para quadros e acessórios)", "Tesoura multiuso", "Estilete", "Parafusadeira (opcional)", "Luvas de proteção", "Máscara para poeira/pintura"
-      ],
-      "🔌 Eletrodomésticos (Cozinha)": [
-        "Geladeira", "Fogão ou cooktop + forno", "Micro-ondas", "Air Fryer", "Liquidificador", "Batedeira", "Sanduicheira ou grill", "Cafeteira", "Panela elétrica", "Forno elétrico", "Mixer", "Exaustor ou depurador", "Filtro de água", "Moedor de café", "Torradeira", "Máquina de fazer pão"
-      ],
-      "🔌 Eletrodomésticos (Lavanderia)": [
-        "Máquina de lavar", "Secadora (ou varal reforçado)", "Ferro ou vaporizador", "Aspirador de pó", "Aspirador robô"
-      ],
-      "🔌 Eletrodomésticos (Sala)": [
-        "TV", "Soundbar ou caixa de som Bluetooth", "Ventilador de torre ou climatizador", "Chromecast / Fire Stick", "Estabilizador / filtro de linha", "Assistente virtual (Alexa, Google...)", "Tomada USB", "Controle remoto universal"
-      ],
-      "💼 Escritório / Home Office": [
-        "Cadeira ergonômica confortável", "Luminária de mesa ajustável", "Organizadores de mesa (porta-canetas, clips, notas)", "Prateleiras ou nichos para livros e pastas", "Caixa organizadora de documentos", "Estante ou gaveteiro pequeno", "Webcam externa", "Microfone (para vídeo chamadas)", "Ring light", "Roteador Wi-Fi potente", "Hub USB", "Carregador portátil / power bank", "Estabilizador / filtro de linha", "Suporte para fones de ouvido", "Tapete para cadeira (proteção do piso)", "Calendário/planner de mesa ou mural", "Quadro branco ou painel de cortiça para lembretes", "Carregador sem fio para celular", "Caixa de som pequena ou fones bluetooth reserva", "Cabos extras (USB, HDMI, extensões)", "Apoio para os pés (ergonomia)", "Plantas pequenas para decorar", "Lixeira pequena para papel"
-      ]
+      // Demais categorias seguem iguais...
+      "🛏 Quarto": [ "Jogo de cama (mínimo 3 conjuntos)", "Protetor de colchão", "Travesseiros (mínimo 2 por pessoa)", "Protetores de travesseiro", "Manta leve + cobertor quente", "Edredom", "Colcha decorativa", "Fronhas avulsas", "Cortina blackout", "Tapete", "Cabides (veludo, madeira ou plástico)", "Organizador de gavetas", "Caixas organizadoras", "Porta-joias / bijuterias", "Aromatizador ou difusor", "Espelho de corpo inteiro", "Abajur de cabeceira", "Bandeja para café ou notebook", "Relógio de mesa", "Organizador de roupas para viagem", "Protetor auricular (sono leve)", "Caixa organizadora para maquiagem e acessórios", "Cesto para roupas limpas" ],
+      "🚿 Banheiro": [ "Toalhas (mínimo 3 por pessoa: banho, rosto e piso)", "Tapete antiderrapante", "Cortina de box", "Roupão", "Cesto pequeno de roupa", "Porta escova de dentes e creme dental", "Porta sabonete", "Dispenser de shampoo/sabonete líquido", "Suporte de parede para produtos", "Lixeira com tampa/pedal", "Escova sanitária", "Espelho pequeno (maquiagem/barbear)", "Aromatizador", "Organizadores de gaveta", "Suporte para papel higiênico", "Caixa de primeiros socorros", "Tesoura pequena e pinça", "Escovinha para limpeza de ralo", "Prendedor de toalha", "Cesto para produtos extras", "Porta shampoo e condicionador para box", "Tapete para pia" ],
+      "🧺 Lavanderia": [ "Máquina de lavar", "Varal (chão ou parede)", "Ferro de passar ou vaporizador", "Tábua de passar", "Baldes (mínimo 2)", "Bacia grande", "Cesto de roupa suja", "Pregadores", "Vassoura, rodo e pá", "MOP ou esfregão", "Panos de chão", "Escova de roupa", "Cesto de produtos de limpeza", "Sabão em pó, líquido, amaciante", "Porta-vassouras", "Luvas de limpeza", "Lixeira pequena", "Aromatizador para roupas", "Esfregão de mão ou escova multiuso", "Rodos e escovas para pisos variados", "Balde com rodinha (opcional)" ],
+      "🛋 Sala": [ "Sofá", "Mesa lateral ou centro", "Rack ou painel para TV", "Tapete grande", "Cortinas", "Almofadas decorativas", "Mantas para sofá", "Abajur / luminária de chão", "Aromatizador / difusor", "Bandeja decorativa", "Porta-retratos", "Porta-controle remoto", "Espelho decorativo", "Vasos ou plantas artificiais", "Quadro ou pôster", "Cesto para mantas ou revistas", "Porta-copos", "Extensão com botão liga/desliga", "Suporte para revistas ou livros" ],
+      "🧰 Manutenção & Ferramentas": [ "Martelo", "Chave de fenda e Philips", "Fita isolante", "Extensão elétrica", "Filtro de linha", "Trena", "Kit de pregos, buchas e parafusos", "Alicate universal", "Super Bonder (cola forte)", "Lanterna ou luz de emergência", "Fita dupla face (para quadros e acessórios)", "Tesoura multiuso", "Estilete", "Parafusadeira (opcional)", "Luvas de proteção", "Máscara para poeira/pintura" ],
+      "🔌 Eletrodomésticos (Cozinha)": [ "Geladeira", "Fogão ou cooktop + forno", "Micro-ondas", "Air Fryer", "Liquidificador", "Batedeira", "Sanduicheira ou grill", "Cafeteira", "Panela elétrica", "Forno elétrico", "Mixer", "Exaustor ou depurador", "Filtro de água", "Moedor de café", "Torradeira", "Máquina de fazer pão" ],
+      "🔌 Eletrodomésticos (Lavanderia)": [ "Máquina de lavar", "Secadora (ou varal reforçado)", "Ferro ou vaporizador", "Aspirador de pó", "Aspirador robô" ],
+      "🔌 Eletrodomésticos (Sala)": [ "TV", "Soundbar ou caixa de som Bluetooth", "Ventilador de torre ou climatizador", "Chromecast / Fire Stick", "Estabilizador / filtro de linha", "Assistente virtual (Alexa, Google...)", "Tomada USB", "Controle remoto universal" ],
+      "💼 Escritório / Home Office": [ "Cadeira ergonômica confortável", "Luminária de mesa ajustável", "Organizadores de mesa (porta-canetas, clips, notas)", "Prateleiras ou nichos para livros e pastas", "Caixa organizadora de documentos", "Estante ou gaveteiro pequeno", "Webcam externa", "Microfone (para vídeo chamadas)", "Ring light", "Roteador Wi-Fi potente", "Hub USB", "Carregador portátil / power bank", "Estabilizador / filtro de linha", "Suporte para fones de ouvido", "Tapete para cadeira (proteção do piso)", "Calendário/planner de mesa ou mural", "Quadro branco ou painel de cortiça para lembretes", "Carregador sem fio para celular", "Caixa de som pequena ou fones bluetooth reserva", "Cabos extras (USB, HDMI, extensões)", "Apoio para os pés (ergonomia)", "Plantas pequenas para decorar", "Lixeira pequena para papel" ]
     };
 
     for (let categoria in enxoval) {
